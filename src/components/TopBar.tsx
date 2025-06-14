@@ -32,6 +32,7 @@ const TopBar: React.FC = () => {
 
   return (
     <div className="topbar">
+      <span style={{color: "red"}}>TOTO JE TEST!</span>
       <NavLink
         to={routes.home}
         className={({ isActive }) =>

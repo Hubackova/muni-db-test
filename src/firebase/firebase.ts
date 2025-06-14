@@ -14,14 +14,14 @@ import { DnaExtractionsType, StorageType } from "../types";
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBy7PGHiTSOS7-61J1EepRcgfHavvUoS-k",
-  authDomain: "ddrad-eda45.firebaseapp.com",
-  databaseURL:
-    "https://ddrad-eda45-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "ddrad-eda45",
-  storageBucket: "ddrad-eda45.firebasestorage.app",
-  messagingSenderId: "555991977370",
-  appId: "1:555991977370:web:274db33b1be9bdfd1efe23",
+  apiKey: "AIzaSyDnH3ayxvbthxfhOs7ybFRmRFGne3ijlE8",
+  authDomain: "dna-mollusca-test.firebaseapp.com",
+  databaseURL: "https://dna-mollusca-test-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "dna-mollusca-test",
+  storageBucket: "dna-mollusca-test.firebasestorage.app",
+  messagingSenderId: "514476554865",
+  appId: "1:514476554865:web:2b79900af2107aea9039d0",
+  measurementId: "G-CZQRTVZQDE"
 };
 
 // Initialize Firebase
