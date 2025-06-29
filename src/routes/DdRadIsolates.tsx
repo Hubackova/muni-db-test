@@ -44,16 +44,16 @@ const All: React.FC<DnaExtractionsProps> = ({ storage, extractions }) => {
   const [showRemoveModal, setShowRemoveModal] = useState(null);
   const [selectedItem, setSelectedItem] = useState(false);
   const [showGroupModal, setShowGroupModal] = useState(null);
-  const { user } = useAuth();
+  const { canEdit } = useAuth();
 
   const editItem = useCallback(
     (key: string, newValue: string, id: string) => {
-      if (!user) return alert("Please log in first");
+      if (!canEdit) return alert("Please log in as an authorized user first");
       update(ref(db, EXTRACTIONS + key), {
         [id]: newValue,
       });
     },
-    [db, user]
+    [db, canEdit]
   );
   const boxOptions = useMemo(
     () =>
@@ -103,10 +103,10 @@ const All: React.FC<DnaExtractionsProps> = ({ storage, extractions }) => {
 
   const removeItem = useCallback(
     (id: string) => {
-      if (!user) return alert("Please log in first");
+      if (!canEdit) return alert("Please log in as an authorized user first");
       setShowModal(id);
     },
-    [user]
+    [canEdit]
   );
 
   const DefaultCell = React.memo<React.FC<any>>(
@@ -445,7 +445,6 @@ const All: React.FC<DnaExtractionsProps> = ({ storage, extractions }) => {
                       onConfirm={async () => {
                         await showEditModal.callback();
                         setShowEditModal(null);
-                        toast.success("Field was edited successfully");
                       }}
                       onCancel={() => {
                         showEditModal.setValue(showEditModal.initialValue);
@@ -829,7 +828,10 @@ const All: React.FC<DnaExtractionsProps> = ({ storage, extractions }) => {
               return (
                 <tr {...row.getRowProps()} key={row.original.key}>
                   <td role="cell" className="remove">
-                    <button onClick={() => removeItem(row.original.key)}>
+                    <button
+                      disabled={!canEdit}
+                      onClick={() => removeItem(row.original.key)}
+                    >
                       X
                     </button>
                   </td>
@@ -850,8 +852,12 @@ const All: React.FC<DnaExtractionsProps> = ({ storage, extractions }) => {
                           {isolateCode}
 
                           <button
+                            disabled={!canEdit}
                             onClick={() => {
-                              if (!user) return alert("Please log in first");
+                              if (!canEdit)
+                                return alert(
+                                  "Please log in as an authorized user first"
+                                );
                               setShowRemoveModal(isolateCode);
                             }}
                           >
@@ -861,8 +867,12 @@ const All: React.FC<DnaExtractionsProps> = ({ storage, extractions }) => {
                       ))}
                     <span
                       className="sample add"
+                      disabled={!canEdit}
                       onClick={() => {
-                        if (!user) return alert("Please log in first");
+                        if (!canEdit)
+                          return alert(
+                            "Please log in as an authorized user first"
+                          );
                         handleIsolateClick(row.original);
                       }}
                     >

@@ -53,10 +53,10 @@ export const DateCell: React.FC<any> = ({
   const db = getDatabase();
   const [showEditModal, setShowEditModal] = useState(null);
   const [value, setValue] = React.useState(initialValue);
-  const { user } = useAuth();
+  const { canEdit } = useAuth();
 
   const onChange = (e: any) => {
-    if (!user) return alert("Please log in first");
+    if (!canEdit) return alert("Please log in as an authorized user first");
     setValue(e.target.value);
     if (
       (initialValue?.toString() || "") !== (e.target.value?.toString() || "")
@@ -105,7 +105,6 @@ export const DateCell: React.FC<any> = ({
             onConfirm={async () => {
               await showEditModal.callback();
               setShowEditModal(null);
-              toast.success("Field was edited successfully");
             }}
             onCancel={() => {
               showEditModal.setValue(showEditModal.initialValue);
@@ -118,6 +117,7 @@ export const DateCell: React.FC<any> = ({
         onChange={onChange}
         type="date"
         title={value.length > maxChars ? value : ""}
+        disabled={!canEdit}
       />
     </>
   );
@@ -136,10 +136,9 @@ export const EditableCell: React.FC<any> = ({
   const db = getDatabase();
   const [showEditModal, setShowEditModal] = useState(null);
   const [value, setValue] = useState(initialValue);
-  const { user } = useAuth();
+  const { canEdit } = useAuth();
 
   const onChange = (e: any) => {
-    if (!user) return alert("Please log in first");
     setValue(e.target.value);
   };
   const onBlur = (e: any) => {
@@ -200,6 +199,7 @@ export const EditableCell: React.FC<any> = ({
     "numberCycles",
     "end",
   ].includes(cell.column.id);
+
   return (
     <>
       {showEditModal?.row.id === cell.row.id &&
@@ -211,7 +211,6 @@ export const EditableCell: React.FC<any> = ({
             onConfirm={async () => {
               await showEditModal.callback();
               setShowEditModal(null);
-              toast.success("Field was edited successfully");
             }}
             onCancel={() => {
               showEditModal.setValue(showEditModal.initialValue);
@@ -225,7 +224,7 @@ export const EditableCell: React.FC<any> = ({
         title={isOverflow ? value : ""}
         onChange={onChange}
         onBlur={onBlur}
-        disabled={disabled}
+        disabled={!canEdit || disabled}
         className={
           isNarrow
             ? "narrow"
@@ -255,9 +254,9 @@ export const EditableNoConfirmCell: React.FC<any> = ({
 }) => {
   const db = getDatabase();
   const [value, setValue] = useState(initialValue);
-  const { user } = useAuth();
+  const { canEdit } = useAuth();
   const onChange = (e: any) => {
-    if (!user) return alert("Please log in first");
+    if (!canEdit) return alert("Please log in as an authorized user first");
     setValue(e.target.value);
   };
   const onBlur = (e: any) => {
@@ -305,7 +304,7 @@ export const EditableNoConfirmCell: React.FC<any> = ({
       value={value}
       onChange={onChange}
       onBlur={onBlur}
-      disabled={disabled}
+      disabled={!canEdit || disabled}
       {...props}
       ref={inputRef}
       title={isOverflow ? value : ""}
@@ -332,10 +331,9 @@ export const SelectCell: React.FC<any> = ({
       ? { value: initialValue, label: initialValue }
       : null
   );
-  const { user } = useAuth();
+  const { canEdit } = useAuth();
 
   const onChange = (value: any) => {
-    if (!user) return alert("Please log in first");
     setValue({ value: value.value, label: value.label });
     if ((initialValue?.toString() || "") !== (value.value?.toString() || "")) {
       if (noConfirm) {
@@ -386,7 +384,6 @@ export const SelectCell: React.FC<any> = ({
             onConfirm={async () => {
               await showEditModal.callback();
               setShowEditModal(null);
-              toast.success("Field was edited successfully");
             }}
             onCancel={() => {
               showEditModal.setValue({
@@ -405,6 +402,7 @@ export const SelectCell: React.FC<any> = ({
         className="narrow"
         title={isOverflow ? value : ""}
         ref={inputRef}
+        disabled={!canEdit}
       />
     </>
   );
@@ -419,9 +417,10 @@ export const CreatableSelectCell: React.FC<any> = ({
   saveLast = () => {},
   maxChars = 22,
   noConfirm = false,
+  disabled = false,
 }) => {
   const db = getDatabase();
-  const { user } = useAuth();
+  const { canEdit } = useAuth();
   const { original } = row;
   const [showEditModal, setShowEditModal] = useState(null);
   const [value, setValue] = React.useState(
@@ -430,7 +429,6 @@ export const CreatableSelectCell: React.FC<any> = ({
       : null
   );
   const onChange = (value: any) => {
-    if (!user) return alert("Please log in first");
     setValue({ value: value.value, label: value.label });
     if ((initialValue?.toString() || "") !== (value.value?.toString() || "")) {
       if (noConfirm) {
@@ -475,7 +473,6 @@ export const CreatableSelectCell: React.FC<any> = ({
             onConfirm={async () => {
               await showEditModal.callback();
               setShowEditModal(null);
-              toast.success("Field was edited successfully");
             }}
             onCancel={() => {
               showEditModal.setValue({
@@ -495,6 +492,7 @@ export const CreatableSelectCell: React.FC<any> = ({
         isSearchable
         className="narrow"
         title={isOverflow ? value : ""}
+        disabled={!canEdit || disabled}
       />
     </>
   );

@@ -33,16 +33,15 @@ const Storage: React.FC<DnaExtractionsProps> = ({ storage, extractions }) => {
   const db = getDatabase();
   const [showModal, setShowModal] = useState(null);
   const [last, setLast] = useState(false);
-  const { user } = useAuth();
+  const { canEdit } = useAuth();
 
   const editItem = useCallback(
     (key: string, newValue: string, id: string) => {
-      if (!user) return alert("Please log in first");
       update(ref(db, "storage/" + key), {
         [id]: newValue,
       });
     },
-    [db, user]
+    [db]
   );
   const storageOptions = useMemo(
     () =>
@@ -68,10 +67,10 @@ const Storage: React.FC<DnaExtractionsProps> = ({ storage, extractions }) => {
 
   const removeItem = useCallback(
     (id: string) => {
-      if (!user) return alert("Please log in first");
+      if (!canEdit) return alert("Please log in as an authorized user first");
       setShowModal(id);
     },
-    [user]
+    [canEdit]
   );
 
   const DefaultCell = React.memo<React.FC<any>>(
@@ -108,6 +107,7 @@ const Storage: React.FC<DnaExtractionsProps> = ({ storage, extractions }) => {
               options={storageOptions}
               dbName="storage/"
               saveLast={setLast}
+              disabled={!canEdit}
             />
           ),
           customComparator
@@ -174,6 +174,8 @@ const Storage: React.FC<DnaExtractionsProps> = ({ storage, extractions }) => {
             title="Do you want to continue?"
             onConfirm={() => {
               setShowModal(null);
+              if (!canEdit)
+                return alert("Please log in as an authorized user first");
               remove(ref(db, "storage/" + showModal));
               toast.success("Box was removed successfully");
             }}
@@ -218,7 +220,10 @@ const Storage: React.FC<DnaExtractionsProps> = ({ storage, extractions }) => {
               return (
                 <tr {...row.getRowProps()} key={row.original.key}>
                   <td role="cell" className="remove">
-                    <button onClick={() => removeItem(row.original.key)}>
+                    <button
+                      disabled={!canEdit}
+                      onClick={() => removeItem(row.original.key)}
+                    >
                       X
                     </button>
                   </td>

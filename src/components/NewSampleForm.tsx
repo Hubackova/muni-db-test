@@ -47,7 +47,7 @@ const NewSampleForm: React.FC = () => {
   const [isDisabled, setIsDisabled] = useState(false);
   const [alternative, setAlternative] = useState("full");
   const db = getDatabase();
-  const { user } = useAuth();
+  const { canEdit } = useAuth();
 
   useEffect(() => {
     onValue(ref(db, EXTRACTIONS), (snapshot) => {
@@ -71,7 +71,8 @@ const NewSampleForm: React.FC = () => {
   }, [db]);
 
   const addItem = (data: any) => {
-    if (!user) return alert("Please log in to add new sample");
+    if (!canEdit)
+      return alert("Please log in as an authorized user to add new sample");
     const { storageSite, ...sampleData } = data;
     Object.keys(sampleData).forEach((key) => {
       if (sampleData[key] === undefined) {
@@ -121,14 +122,17 @@ const NewSampleForm: React.FC = () => {
 
     if (!!newIsolateCodeGroupUnique.length) {
       groupKeys.forEach((i) => {
-        if (!user) return alert("Please log in to add new sample");
+        if (!canEdit)
+          return alert("Please log in as an authorized user to add new sample");
         update(ref(db, EXTRACTIONS + i), {
           isolateCodeGroup: newIsolateCodeGroupUnique,
         });
       });
     }
-    sessionStorage.removeItem(FORM_DATA_KEY);
-    toast.success("Sample was added successfully");
+    if (canEdit) {
+      sessionStorage.removeItem(FORM_DATA_KEY);
+      toast.success("Sample was added successfully");
+    }
   };
 
   const getSavedData = React.useCallback(() => {

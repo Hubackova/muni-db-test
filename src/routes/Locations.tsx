@@ -17,20 +17,21 @@ import IndeterminateCheckbox from "../components/IndeterminateCheckbox";
 import { EXTRACTIONS } from "../constants";
 import { getLocalityOptions } from "../helpers/getLocalityOptions";
 import { ReactComponent as ExportIcon } from "../images/export.svg";
+import { useAuth } from "../AuthContext";
 
 interface LocationsProps {
   extractions: DnaExtractionsType[];
 }
 
-const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
+const Locations: React.FC<LocationsProps> = ({ extractions }) => {
   const db = getDatabase();
   const localityOptions = useMemo(() => getLocalityOptions(extractions), []);
   const [full, setFull] = useState(false);
   const [showEditModal, setShowEditModal] = useState(null);
-  console.log(extractions);
+  const { canEdit } = useAuth();
+
   const editItem = useCallback(
     (key: string, newValue: string, id: string) => {
-      if (!user) return alert("Please log in first");
       const groupItems = extractions.filter((i) => {
         return i.localityCode === key;
       });
@@ -41,7 +42,7 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
         })
       );
     },
-    [db, extractions, user]
+    [db, extractions]
   );
 
   const customComparator = (prevProps, nextProps) => {
@@ -68,7 +69,14 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
       React.useEffect(() => {
         setValue(initialValue);
       }, [initialValue]);
-      return <input value={value} onChange={onChange} onBlur={onBlur} />;
+      return (
+        <input
+          value={value}
+          disabled={!canEdit}
+          onChange={onChange}
+          onBlur={onBlur}
+        />
+      );
     },
     customComparator
   );
@@ -105,6 +113,7 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
                 onChange={onChange}
                 value={value}
                 className="semi-narrow"
+                disabled={!canEdit}
               ></input>
             );
           },
@@ -138,6 +147,7 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
                 onChange={onChange}
                 value={value}
                 className="semi-narrow"
+                disabled={!canEdit}
               ></input>
             );
           },
@@ -171,6 +181,7 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
                 onChange={onChange}
                 value={value}
                 className="semi-narrow"
+                disabled={!canEdit}
               ></input>
             );
           },
@@ -208,6 +219,7 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
                 onChange={onChange}
                 value={value}
                 className="semi-narrow"
+                disabled={!canEdit}
               ></input>
             );
           },
@@ -245,6 +257,7 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
                 onChange={onChange}
                 value={value}
                 className="semi-narrow"
+                disabled={!canEdit}
               ></input>
             );
           },
@@ -281,6 +294,7 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
                 }}
                 onChange={onChange}
                 value={value}
+                disabled={!canEdit}
               ></input>
             );
           },
@@ -314,6 +328,7 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
                 onChange={onChange}
                 value={value}
                 className="wide"
+                disabled={!canEdit}
               ></input>
             );
           },
@@ -346,6 +361,7 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
                 }}
                 onChange={onChange}
                 value={value}
+                disabled={!canEdit}
               ></input>
             );
           },
@@ -379,6 +395,7 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
                 onChange={onChange}
                 value={value}
                 type="date"
+                disabled={!canEdit}
               ></input>
             );
           },
@@ -411,6 +428,7 @@ const Locations: React.FC<LocationsProps> = ({ extractions, user }) => {
                 }}
                 onChange={onChange}
                 value={value}
+                disabled={!canEdit}
               ></input>
             );
           },

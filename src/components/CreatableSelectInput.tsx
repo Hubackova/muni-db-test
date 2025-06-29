@@ -2,6 +2,7 @@ import cx from "classnames";
 import React from "react";
 import CreatableSelect from "react-select/creatable";
 import "./SelectInput.scss";
+import { useAuth } from "../AuthContext";
 
 export interface DefaultOptionType {
   label: string;
@@ -19,6 +20,7 @@ function CreatableSelectInput(
   }: any,
   ref: React.Ref<any>
 ) {
+  const { canEdit } = useAuth();
   return (
     <div className="select">
       {label && <label className="label">{label}</label>}
@@ -32,6 +34,7 @@ function CreatableSelectInput(
         })}
         classNamePrefix="select"
         menuPlacement="auto"
+        isDisabled={!canEdit || props.disabled}
       />
       {!!error && <div className="error-message">{error}</div>}
     </div>
